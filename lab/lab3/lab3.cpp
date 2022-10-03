@@ -127,27 +127,55 @@ void insert_student(int student_id)
 {
     ifstream ifs("student_list.txt");
     int line;
-    int count = 0;
+    int posCount = 0;
     // Check if the student already exists in the list
     while (ifs >> line)
     {
-        count ++;
         if (line == student_id)
         {
             cout << "Student " << student_id << " is already taking the course!";
             ifs.close();
             return;
         }
-        else if ()
+        // Count which line should the sid insert to
+        else if (line < student_id)
         {
+            posCount++;
         }
     }
-    ifs.close();
-    
-    // Insert the SID in the list
 
-    ifstream ifs("student_list.txt");
+    // Insert the SID in the list
+    // Create a temp(output) file
+    ofstream ofs;
+    ofs.open("temp.txt"); // Another way to create a fstream object
+    if (!ofs)
+    {
+        cerr << "Error: Can’t open \""
+             << "temp.txt"
+             << "\"\n";
+        return;
+    }
+    // Reset the position of ifstream
+    ifs.close();
+    ifs.open("student_list.txt");
+
+    //Perform file Copy
+    cout<< "Perform Copy";
+    int oPosCount =0;
+    while (ifs >> line)
+    {
+        //Insert new records
+        if (posCount==oPosCount){
+            ofs << student_id <<endl;
+        }
+        ofs << line <<endl;
+        oPosCount++;
+    }
     
+    ifs.close();
+    ofs.close();
+    ffh_remove();
+    ffh_rename();
     cout << "Student " << student_id << " is inserted successfully!";
 }
 
