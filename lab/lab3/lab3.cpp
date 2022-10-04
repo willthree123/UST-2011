@@ -70,18 +70,12 @@ void ffh_copy()
 }
 void ffh_rename()
 {
-    if (rename("temp.txt", "student_list.txt") == 0)
-        cout << "The file is successfully renamed" << endl;
-    else
-        cout << "Error renaming file" << endl;
+    rename("temp.txt", "student_list.txt");
 }
 
 void ffh_remove(char filename[] = "student_list.txt")
 {
-    if (remove(filename) == 0)
-        cout << "The file is successfully removed" << endl;
-    else
-        cout << "Error removing file" << endl;
+    remove(filename);
 }
 
 void getValueToArray()
@@ -118,6 +112,61 @@ bool student_lookup(int student_id)
 // Please check the section "Hint" in the lab page for how to rename a file or remove a file.
 void delete_student(int student_id)
 {
+    //set up input stream
+    ifstream ifs("student_list.txt");
+    int line;
+    int posCount = 0;
+    bool isFound = false;
+    // Check if the student already exists in the list
+    while (ifs >> line)
+    {
+        if (line == student_id)
+        {
+            ifs.close();
+            isFound = true;
+            break;
+        }
+        // Count which line should the sid insert to
+        posCount++;
+    }
+    
+    if(!isFound){
+        cout << "Student " << student_id << " is not taking the course!" << endl;
+        return;
+    }
+
+    // Create a temp(output) file
+    ofstream ofs;
+    ofs.open("temp.txt"); // Another way to create a fstream object
+    if (!ofs)
+    {
+        cerr << "Error: Can’t open \""
+             << "temp.txt"
+             << "\"\n";
+        return;
+    }
+
+    // Reset the position of ifstream
+    ifs.close();
+    ifs.open("student_list.txt");
+
+    //Perform file Copy
+    int oPosCount =0;
+    while (ifs >> line)
+    {
+        //Insert new records
+        if (posCount!=oPosCount){
+            ofs << line <<endl;
+        }
+        oPosCount++;
+    }
+    
+    ifs.close();
+    ofs.close();
+    ffh_remove();
+    ffh_rename();
+    cout << "Student " << student_id << " is removed from the course!"<< endl;
+    return;
 }
 
 // TODO: insert a student in the input file such that the student ids are in ascending order
@@ -125,6 +174,7 @@ void delete_student(int student_id)
 // Please check the section "Hint" in the lab page for how to rename a file or remove a file.
 void insert_student(int student_id)
 {
+    //set up input stream
     ifstream ifs("student_list.txt");
     int line;
     int posCount = 0;
@@ -133,7 +183,7 @@ void insert_student(int student_id)
     {
         if (line == student_id)
         {
-            cout << "Student " << student_id << " is already taking the course!";
+            cout << "Student " << student_id << " is already taking the course!"<< endl;
             ifs.close();
             return;
         }
@@ -144,7 +194,6 @@ void insert_student(int student_id)
         }
     }
 
-    // Insert the SID in the list
     // Create a temp(output) file
     ofstream ofs;
     ofs.open("temp.txt"); // Another way to create a fstream object
@@ -160,7 +209,6 @@ void insert_student(int student_id)
     ifs.open("student_list.txt");
 
     //Perform file Copy
-    cout<< "Perform Copy";
     int oPosCount =0;
     while (ifs >> line)
     {
@@ -176,7 +224,7 @@ void insert_student(int student_id)
     ofs.close();
     ffh_remove();
     ffh_rename();
-    cout << "Student " << student_id << " is inserted successfully!";
+    cout << "Student " << student_id << " is inserted successfully!"<< endl;
 }
 
 int main()
