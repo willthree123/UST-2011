@@ -17,13 +17,11 @@ void pa1_srand(unsigned int seed) // This function is used to set a seed of the 
 {
     next_num = seed;
 }
-/* Everytime you call pa1_rand(), you will get a new pseudo random number. For the same seed, the sequence of pseudo 
-   random number is fixed. For example, when seed = 3, the sequence of pseudo random number is fixed to be [17746, 
-   30897, 9622, 18921, 4034, 17510, 24152, 14388, 23665, 31532, ...]. When seed = 5, the sequence of pseudo random 
+/* Everytime you call pa1_rand(), you will get a new pseudo random number. For the same seed, the sequence of pseudo
+   random number is fixed. For example, when seed = 3, the sequence of pseudo random number is fixed to be [17746,
+   30897, 9622, 18921, 4034, 17510, 24152, 14388, 23665, 31532, ...]. When seed = 5, the sequence of pseudo random
    number is fixed to be [18655, 32247, 9873, 9718, 26373, 27678, 5314, 22512, 31845, 22885, ...] */
 /* -------------------------------------------------------------- */
-
-
 
 const int MAX_BOXES = 1000; // This constant stores the largest length of boxes[]. You can use it in your code.
 
@@ -48,19 +46,89 @@ void placeSlips(int boxes[], int num_prisoners)
 bool simulateRoom(const int boxes[], int num_prisoners, int num_trials)
 {
     /* Please replace this to your own code below */
-
-    return false;
+    int tempNo;
+    bool isFound;
+    for (int i = 0; i < num_prisoners; i++)
+    {
+        isFound = false;
+        // cout<<"1. box "<<i<<": "<<boxes[i]<<endl;
+        if (boxes[i] == i)
+        {
+            continue;
+        }
+        else
+        {
+            tempNo = boxes[i];
+            for (int j = 0; j < num_trials - 1; j++)
+            {
+                // cout<<j+2<<". box "<<tempNo<<": "<<boxes[tempNo]<<endl;
+                if (boxes[tempNo] == i)
+                {
+                    isFound = true;
+                    break;
+                }
+                else
+                {
+                    tempNo = boxes[tempNo];
+                }
+            }
+            if (!isFound)
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }
 
+int task2_getCount(const int boxes[], int num_prisoners, int num_trials)
+{
+    int counter=0;
+    int tempNo;
+    for (int i = 0; i < num_prisoners; i++)
+    {
+        // cout<<"1. box "<<i<<": "<<boxes[i]<<endl;
+        if (boxes[i] == i)
+        {
+            counter++;
+            continue;
+        }
+        else
+        {
+            tempNo = boxes[i];
+            for (int j = 0; j < num_trials - 1; j++)
+            {
+                // cout<<j+2<<". box "<<tempNo<<": "<<boxes[tempNo]<<endl;
+                if (boxes[tempNo] == i)
+                {
+                    counter++;
+                    break;
+                }
+                else
+                {
+                    tempNo = boxes[tempNo];
+                }
+            }
+        }
+    }
+    return counter;
+}
+int task2_longestPath(const int boxes[], int num_prisoners, int num_trials){
+    
+}
 // TASK 2: Display certain statistics for a given room
 void statsRoom(const int boxes[], int num_prisoners, int num_trials)
 {
     /* Here in this task, we provide some lines of code for your reference. Please write your code below and replace some of the given code */
-
-    cout << "The number of prisoners who find their slips: " << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
-    cout << "Number of loops: " << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
-    cout << "Smallest loop length: " << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
-    cout << "Longest loop length: " << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
+    
+    cout << "The number of prisoners who find their slips: "
+         << task2_getCount(boxes, num_prisoners, num_trials)<< endl;
+    cout << "Number of loops: "
+         << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
+    cout << "Smallest loop length: "
+         << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
+    cout << "Longest loop length: "
+         << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
     cout << "Largest loop: ";
 
     /* Please replace this to your own code */
@@ -84,15 +152,6 @@ bool niceGuard(int boxes[], int num_prisoners, int num_trials)
 
     return false;
 }
-
-
-
-
-
-
-
-
-
 
 // DO NOT WRITE ANYTHING AFTER THIS LINE. ANYTHING AFTER THIS LINE WILL BE REPLACED.
 
