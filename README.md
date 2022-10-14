@@ -1,5 +1,9 @@
 # UST 2011
 
+### lab5_1.0 [23:33 2022/10/14]
+
+- Leave save
+
 ### pa1_4.0 [22:30 2022/10/14]
 
 - Finished the whole pa1
