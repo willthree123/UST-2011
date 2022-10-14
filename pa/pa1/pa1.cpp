@@ -46,44 +46,62 @@ void placeSlips(int boxes[], int num_prisoners)
 bool simulateRoom(const int boxes[], int num_prisoners, int num_trials)
 {
     /* Please replace this to your own code below */
-    int tempNo;
-    bool isFound;
+    int tempNo;   // To store a temp box number
+    bool isFound; // Indicates whether the prisioner found the correct box
+    // for all prisoners
     for (int i = 0; i < num_prisoners; i++)
     {
+        // init variables
         isFound = false;
-        // cout<<"1. box "<<i<<": "<<boxes[i]<<endl;
+        // Start with the box with the same number as the prisoner
+        // if the paper in side is the same
         if (boxes[i] == i)
         {
             continue;
+            // to the next prisoner
         }
         else
         {
+            // store the number on the paper to tempNo
             tempNo = boxes[i];
+
+            // for the remaining try
             for (int j = 0; j < num_trials - 1; j++)
             {
                 // cout<<j+2<<". box "<<tempNo<<": "<<boxes[tempNo]<<endl;
+
+                // Open the box with the pervious number
+                // if the paper in that box is the prisoner's own number
                 if (boxes[tempNo] == i)
                 {
+                    // set isFound to true, indicating that prisoner found its own number paper
                     isFound = true;
+                    // break the for loop, discarding the remaining try
                     break;
                 }
+                // if the paper in that box is not the prisoner's own number
                 else
                 {
+                    // store the number on the paper to tempNo
                     tempNo = boxes[tempNo];
                 }
             }
+            // if prisoner could not find its own number paper
+            // the simulation is over, return false
             if (!isFound)
             {
                 return false;
             }
         }
     }
+    // after all the loops, means all prisnor found its own number paper
+    // so we can return the result, that all prisnors found its own number paper
     return true;
 }
 
 int task2_getCount(const int boxes[], int num_prisoners, int num_trials)
 {
-    int counter=0;
+    int counter = 0;
     int tempNo;
     for (int i = 0; i < num_prisoners; i++)
     {
@@ -113,23 +131,100 @@ int task2_getCount(const int boxes[], int num_prisoners, int num_trials)
     }
     return counter;
 }
-int task2_longestPath(const int boxes[], int num_prisoners, int num_trials){
-    
+
+void task2_minmaxPath(const int boxes[], int num_prisoners, int num_trials, int &longestPath, int &shortestPath, int longestPathArray[], int &loopCount)
+{
+    /* Please replace this to your own code below */
+    int tempNo;   // To store a temp box number
+    bool isFound; // Indicates whether the prisioner found the correct box
+    int longestStartingPoint = 0;
+    bool recording[MAX_BOXES];
+    // an array indicating if the prisoners already been counted
+    for (int init = 0; init < MAX_BOXES; init++)
+    {
+        recording[init] = false;
+    }
+    // cout << endl;
+    // for all prisoners
+    for (int i = 0; i < num_prisoners; i++)
+    {
+        if (recording[i])
+            continue; // If the prisnor is already in a loop
+        // cout << "i loop: " << i;
+        // init variables
+        int stepsCount = 0; // count the steps of the path
+
+        // Start with the box with the same number as the prisoner
+        tempNo = i;
+        // the paper in the box is not prisoner's nubmer
+        while (boxes[tempNo] != i)
+        {
+            recording[tempNo] = true;
+            tempNo = boxes[tempNo];
+            stepsCount++;
+        }
+
+        recording[tempNo] = true;
+        stepsCount++;
+        loopCount++;
+        if (stepsCount > longestPath) // if prisnor has the longest path
+        {
+            // cout << "LONGEST ";
+            longestPath = stepsCount;
+            // cout << longestPath << " ";
+            longestStartingPoint = i;
+            // cout<<"starting :"<<longestStartingPoint<<"\t";
+        }
+        if (shortestPath > stepsCount) // if prisnor has the shortest path
+        {
+            // cout << "SHORTEST ";
+            shortestPath = stepsCount;
+            // cout << shortestPath << " ";
+        }
+        // cout << "steps: " << stepsCount << endl;
+    }
+    // Write the longest path into the array
+    int idx = 0;
+    // Start with the box with the same number as the prisoner
+    tempNo = longestStartingPoint;
+
+    // the paper in the box is not prisoner's nubmer
+    while (boxes[tempNo] != longestStartingPoint)
+    {
+        longestPathArray[idx] = tempNo;
+        tempNo = boxes[tempNo];
+        idx++;
+    }
+    longestPathArray[idx] = tempNo;
 }
 // TASK 2: Display certain statistics for a given room
 void statsRoom(const int boxes[], int num_prisoners, int num_trials)
 {
     /* Here in this task, we provide some lines of code for your reference. Please write your code below and replace some of the given code */
-    
-    cout << "The number of prisoners who find their slips: "
-         << task2_getCount(boxes, num_prisoners, num_trials)<< endl;
-    cout << "Number of loops: "
-         << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
-    cout << "Smallest loop length: "
-         << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
-    cout << "Longest loop length: "
-         << "Please replace this to your own code" /* Please replace this to your own code */ << endl;
+
+    // init variables for the shortestPath/ longestPat
+    int shortestPath = MAX_BOXES, longestPath = 0, loopCount = 0;
+    // init the array that stores the longest path
+    int longestPathArray[MAX_BOXES];
+    for (int init = 0; init < MAX_BOXES; init++)
+    {
+        longestPathArray[init] = -1;
+    }
+
+    task2_minmaxPath(boxes, num_prisoners, num_trials, longestPath, shortestPath, longestPathArray, loopCount);
+
+    cout << "The number of prisoners who find their slips: " << task2_getCount(boxes, num_prisoners, num_trials) << endl;
+    cout << "Number of loops: " << loopCount << endl;
+    cout << "Smallest loop length: " << shortestPath << endl;
+    cout << "Longest loop length: " << longestPath << endl;
     cout << "Largest loop: ";
+
+    int idx = 0;
+    while (longestPathArray[idx] != -1)
+    {
+        cout << longestPathArray[idx] << " ";
+        idx++;
+    }
 
     /* Please replace this to your own code */
 
@@ -140,8 +235,17 @@ void statsRoom(const int boxes[], int num_prisoners, int num_trials)
 double successRooms(int boxes[], int num_prisoners, int num_trials) //  suceess rate of 1000 rooms basically repeating it a 1000 times
 {
     /* Please replace this to your own code below */
-
-    return 0;
+    double count = 0;
+    for (int j = 1; j <= 1000; j++)
+    {
+        placeSlips(boxes, num_prisoners);
+        if (simulateRoom(boxes, num_prisoners, num_trials) == true)
+        {
+            count++;
+        }
+    }
+    // cout<<"Count: "<<count;
+    return count;
 }
 
 // TASK 4: Nice guard will help the prisoners to successfully leave the room by breaking any loop which is greater than the number of trials
