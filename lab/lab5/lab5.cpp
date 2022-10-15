@@ -36,19 +36,22 @@ void print_canvas(const char canvas[HEIGHT][WIDTH])
 // Task 2: change the cursor after painting the pixel
 void paint_pixel(char canvas[HEIGHT][WIDTH], int row_position, int col_position)
 {
-    canvas[row_position][col_position];
+    if (canvas[row_position][col_position] == '#')
+        canvas[row_position][col_position] = 'X';
 }
 
 // Task 3: change the cursor after painting the pixel
 void erase_pixel(char canvas[HEIGHT][WIDTH], int row_position, int col_position)
 {
+    if (canvas[row_position][col_position] == 'X')
+        canvas[row_position][col_position] = '#';
 }
 
 // Task 4: check whether the move is valid and move the cursor
 bool move_brush(char canvas[HEIGHT][WIDTH], int &row_position, int &col_position, char move)
 {
-    int oldPos[2]={row_position,col_position};
-    
+    int oldPos[2] = {row_position, col_position};
+
     // up
     if (move == 'i' && row_position != 0)
         row_position--;
@@ -63,16 +66,18 @@ bool move_brush(char canvas[HEIGHT][WIDTH], int &row_position, int &col_position
         col_position++;
     else
         return false;
-    
-    // Remove old cursor 
-    if (canvas[oldPos[0]][oldPos[1]]='X')
-        canvas[oldPos[0]][oldPos[1]] = 'x';
-    else canvas[oldPos[0]][oldPos[1]] = '.';
 
-    // Write the new cursor
-    if (canvas[row_position][col_position]='x')
+    // Remove old cursor
+    if (canvas[oldPos[0]][oldPos[1]] == 'X')
+        canvas[oldPos[0]][oldPos[1]] = 'x';
+    else
+        canvas[oldPos[0]][oldPos[1]] = '.';
+
+    // // Write the new cursor
+    if (canvas[row_position][col_position] == 'x')
         canvas[row_position][col_position] = 'X';
-    else canvas[row_position][col_position]= '#';
+    else
+        canvas[row_position][col_position] = '#';
 
     return true;
 }
@@ -84,9 +89,12 @@ void print_canvas_without_cursor(const char canvas[HEIGHT][WIDTH])
     {
         for (int j = 0; j < WIDTH; j++)
         {
-            if(canvas[i][j]=='X') cout << 'x';
-            else if(canvas[i][j]=='#') cout << '.';
-            else cout << canvas[i][j];
+            if (canvas[i][j] == 'X')
+                cout << 'x';
+            else if (canvas[i][j] == '#')
+                cout << '.';
+            else
+                cout << canvas[i][j];
         }
         cout << endl;
     }
