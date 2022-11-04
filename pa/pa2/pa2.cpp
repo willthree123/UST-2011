@@ -50,8 +50,8 @@ int whoseTurn = RED;
 
 // Starting map for the game
 const int ORIGINAL_MAP[NUM_ROWS][NUM_COLS] = {{0, 0, 0, 0, 0, 0},
-                                              {2, 2, 2, 2, 2, 2},
-                                              {0, 0, 0, 0, 0, 0},
+                                              {2, 2, 0, 1, 0, 2},
+                                              {0, 0, 0, 2, 0, 0},
                                               {1, 0, 0, 0, 0, 0},
                                               {0, 1, 0, 0, 0, 0},
                                               {0, 0, 0, 0, 0, 0}};
@@ -417,6 +417,14 @@ int move(int map[NUM_ROWS][NUM_COLS], int currentRow, int currentCol, int destin
         }
         map[destinationRow][destinationCol] = map[currentRow][currentCol];
         map[currentRow][currentCol] = EMPTY;
+        if (selected == RED_MAN && destinationRow == 0)
+        {
+            map[destinationRow][destinationCol] = RED_KING;
+        }
+        if (selected == BLACK_MAN && destinationRow == NUM_ROWS - 1)
+        {
+            map[destinationRow][destinationCol] = BLACK_KING;
+        }
         return CAPTURE;
     }
     map[destinationRow][destinationCol] = map[currentRow][currentCol];
@@ -586,7 +594,7 @@ int checkEndGameConditions(int map[NUM_ROWS][NUM_COLS])
     // cout << "CONTINUE";
     return CONTINUE;
 }
-int compare(int &a, int &max)
+int uCompare(int &a, int &max)
 {
     if (a > max)
         max = a;
@@ -671,60 +679,60 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     if (checkIfValid(map, i, j, i + 2, j) == DOWN_CAPTURE)
                     { // 1 DOWN
                         move(map, i, j, i + 2, j);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 2, j) == UP_CAPTURE)
                     { // 2 UP
                         move(map, i, j, i - 2, j);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 2) == RIGHT_CAPTURE)
                     { // 3 RIGHT
                         move(map, i, j, i, j + 2);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 2) == LEFT_CAPTURE)
                     { // 4 LEFT
                         move(map, i, j, i, j - 2);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                 }
-                if (selected == RED_KING|| selected == RED_MAN)
+                if (selected == RED_KING || selected == RED_MAN)
                 {
                     if (checkIfValid(map, i, j, i + 1, j) == VALID)
                     { // 5 DOWN
                         move(map, i, j, i + 1, j);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 1, j) == VALID)
                     { // 6 UP
                         move(map, i, j, i - 1, j);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 1) == VALID)
                     { // 7 RIGHT
                         move(map, i, j, i, j + 1);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 1) == VALID)
                     { // 8 LEFT
                         move(map, i, j, i, j - 1);
-                        score += recursive_solver(map, initialPlayer, BLACK, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                 }
@@ -737,29 +745,29 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     if (checkIfValid(map, i, j, i + 2, j) == DOWN_CAPTURE)
                     { // 1 DOWN
                         move(map, i, j, i + 2, j);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 2, j) == UP_CAPTURE)
                     { // 2 UP
                         move(map, i, j, i - 2, j);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 2) == RIGHT_CAPTURE)
                     { // 3 RIGHT
                         move(map, i, j, i, j + 2);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 2) == LEFT_CAPTURE)
                     { // 4 LEFT
                         move(map, i, j, i, j - 2);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                 }
@@ -769,37 +777,40 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     if (checkIfValid(map, i, j, i + 1, j) == VALID)
                     { // 5 DOWN
                         move(map, i, j, i + 1, j);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 1, j) == VALID)
                     { // 6 UP
                         move(map, i, j, i - 1, j);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 1) == VALID)
                     { // 7 RIGHT
                         move(map, i, j, i, j + 1);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 1) == VALID)
                     { // 8 LEFT
                         move(map, i, j, i, j - 1);
-                        score += recursive_solver(map, initialPlayer, RED, rounds+1);
-                        max(score, maxScore);
+                        score += recursive_solver(map, initialPlayer, RED, rounds + 1);
+                        uCompare(score,maxScore);
                         copyMap(mapClone, map);
                     }
                 }
             }
         }
     }
-
-    // return recursive_solver(map, player, initialPlayer, --rounds);
+    if (rounds != 0)
+    {
+        cout << "score: " << score<<endl;
+        return score;
+    }
 
     //-------- DO NOT MODIFY CODE BELOW. PUT ANY OF YOUR ANSWERS IN BETWEEN THESE TWO COMMENTS --------
     // cout << "round " << rounds << "Max Score: " << maxScore << endl;

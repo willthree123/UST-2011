@@ -1,1 +1,1 @@
-rounds+1
+max(score, maxScore);
