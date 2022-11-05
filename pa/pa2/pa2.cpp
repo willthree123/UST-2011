@@ -50,18 +50,18 @@ int whoseTurn = RED;
 
 // Starting map for the game
 const int ORIGINAL_MAP[NUM_ROWS][NUM_COLS] = {{0, 0, 0, 0, 0, 0},
-                                              {2, 2, 0, 1, 0, 2},
-                                              {0, 0, 0, 2, 0, 0},
-                                              {1, 0, 0, 0, 0, 0},
-                                              {0, 1, 0, 0, 0, 0},
+                                              {1, 1, 1, 1, 1, 1},
+                                              {0, 0, 0, 0, 0, 0},
+                                              {0, 0, 0, 0, 0, 0},
+                                              {2, 2, 2, 2, 2, 2},
                                               {0, 0, 0, 0, 0, 0}};
 
 // Default map for the recursive solver
 const int DEFAULT_MAP[NUM_ROWS][NUM_COLS] = {{0, 0, 0, 0, 0, 0},
-                                             {0, 0, 1, 0, 0, 0},
                                              {0, 0, 0, 0, 0, 0},
-                                             {0, 0, 1, 0, 0, 0},
-                                             {0, 0, 2, 1, 0, 0},
+                                             {0, 0, 0, 0, 0, 0},
+                                             {0, 0, 0, 0, 0, 1},
+                                             {2, 0, 0, 4, 1, 0},
                                              {0, 0, 0, 0, 0, 0}};
 
 /**
@@ -594,10 +594,19 @@ int checkEndGameConditions(int map[NUM_ROWS][NUM_COLS])
     // cout << "CONTINUE";
     return CONTINUE;
 }
-int uCompare(int &a, int &max)
+int uCompare(int &a, int &max,
+             const int pRow, const int pCol,
+             const int mRow, const int mCol,
+             int &sRow, int &sCol, int &dRow, int &dCol)
 {
     if (a > max)
+    {
         max = a;
+        sRow = pRow;
+        sCol = pCol;
+        dRow = mRow;
+        dCol = mCol;
+    }
     a = 0;
 }
 /**
@@ -665,10 +674,11 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
     copyMap(map, mapClone);
     int score = 0;
     // cout<<"loop"<<endl;
+    for (int i = 0; i < NUM_ROWS; i++)
+        {
     for (int j = 0; j < NUM_COLS; j++)
     {
-        for (int i = 0; i < NUM_ROWS; i++)
-        {
+        
             int selected = map[i][j];
             if (player == RED)
             {
@@ -680,28 +690,28 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     { // 1 DOWN
                         move(map, i, j, i + 2, j);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i + 2, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 2, j) == UP_CAPTURE)
                     { // 2 UP
                         move(map, i, j, i - 2, j);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i - 2, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 2) == RIGHT_CAPTURE)
                     { // 3 RIGHT
                         move(map, i, j, i, j + 2);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j + 2, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 2) == LEFT_CAPTURE)
                     { // 4 LEFT
                         move(map, i, j, i, j - 2);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j - 2, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                 }
@@ -711,28 +721,28 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     { // 5 DOWN
                         move(map, i, j, i + 1, j);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i + 1, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 1, j) == VALID)
                     { // 6 UP
                         move(map, i, j, i - 1, j);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i - 1, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 1) == VALID)
                     { // 7 RIGHT
                         move(map, i, j, i, j + 1);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j + 1, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 1) == VALID)
                     { // 8 LEFT
                         move(map, i, j, i, j - 1);
                         score += recursive_solver(map, initialPlayer, BLACK, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j - 1, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                 }
@@ -746,28 +756,28 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     { // 1 DOWN
                         move(map, i, j, i + 2, j);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i + 2, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 2, j) == UP_CAPTURE)
                     { // 2 UP
                         move(map, i, j, i - 2, j);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i - 2, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 2) == RIGHT_CAPTURE)
                     { // 3 RIGHT
                         move(map, i, j, i, j + 2);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j + 2, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 2) == LEFT_CAPTURE)
                     { // 4 LEFT
                         move(map, i, j, i, j - 2);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j - 2, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                 }
@@ -778,39 +788,37 @@ int recursive_solver(int map[NUM_ROWS][NUM_COLS], int initialPlayer, int player,
                     { // 5 DOWN
                         move(map, i, j, i + 1, j);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i + 1, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i - 1, j) == VALID)
                     { // 6 UP
                         move(map, i, j, i - 1, j);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i - 1, j, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j + 1) == VALID)
                     { // 7 RIGHT
                         move(map, i, j, i, j + 1);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j + 1, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                     if (checkIfValid(map, i, j, i, j - 1) == VALID)
                     { // 8 LEFT
                         move(map, i, j, i, j - 1);
                         score += recursive_solver(map, initialPlayer, RED, rounds + 1);
-                        uCompare(score,maxScore);
+                        uCompare(score, maxScore, i, j, i, j - 1, maxStartRow, maxStartCol, maxDistinationRow, maxDistinationCol);
                         copyMap(mapClone, map);
                     }
                 }
             }
         }
     }
-    if (rounds != 0)
-    {
-        cout << "score: " << score<<endl;
-        return score;
-    }
+    // cout << "Round:" << rounds << "  "
+    //      << "Score:" << score << "  "
+    //      << "maxScore: " << maxScore << endl;
 
     //-------- DO NOT MODIFY CODE BELOW. PUT ANY OF YOUR ANSWERS IN BETWEEN THESE TWO COMMENTS --------
     // cout << "round " << rounds << "Max Score: " << maxScore << endl;

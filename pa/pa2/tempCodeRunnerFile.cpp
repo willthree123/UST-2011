@@ -1,1 +1,3 @@
-max(score, maxScore);
+    // cout << "Round:" << rounds << "  "
+    //      << "Score:" << score << "  "
+    //      << "maxScore: " << maxScore << endl;
