@@ -530,38 +530,40 @@ bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TI
     if (head == nullptr)
     {
         head = cur;
-        cout << "first node";
+        // cout << "first node";
         return true;
     }
-    else if (strcmp(head->code,c)>0 ){
+    else if (strcmp(head->code, c) > 0)
+    {
         cur->next = head;
         head = cur;
         return true;
     }
-    cout << "after first";
+    // cout << "after first";
     Course *idx = new Course;
     idx = head;
-    cout << "before loop";
-    while (idx->next != nullptr)
+    // cout << "before loop";
+    do
     {
-        cout << "while";
+        // cout << "while";
         if (strcmp(cur->code, idx->code) == 0)
         {
-            cout << "already exists" << endl;
+            // cout << "already exists" << endl;
             return false;
         }
         else if (strcmp(cur->code, idx->code) > 0)
         {
-            cout << "C";
+            // cout << "C";
             cur->next = idx->next;
             idx->next = cur;
             return true;
         }
-        cout << "D";
+        // cout << "D";
         idx = idx->next;
-    }
+    } while (idx->next != nullptr);
+
     idx->next = cur;
-    cout << "head/end wrote" << endl;
+    // cout << "head/end wrote" << endl;
     return true;
     // return false;
 }
