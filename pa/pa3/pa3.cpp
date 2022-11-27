@@ -481,11 +481,59 @@ void ll_print_all(const Course *head)
         cout << "No pre-exclusions" << endl;
     }
 }
+Course *codePointer(Course *const head, const char c[MAX_CODE])
+{
+    if (head == nullptr)
+        return nullptr;
+        
+    Course *ppointer = new Course;
+    ppointer = head;
+    // empty list
 
+    while (ppointer != nullptr)
+    {
+        // the next course is what we want
+        if (strcmp(c, ppointer->code) == 0)
+        {
+            return ppointer;
+        }
+        ppointer = ppointer->next;
+    }
+    delete ppointer;
+    ppointer = nullptr;
+    return nullptr;
+}
+Course *previousCodePointer(Course *const head, const char c[MAX_CODE])
+{
+    if (head == nullptr)
+        return nullptr;
+    Course *ppointer = new Course;
+    ppointer = head;
+    // empty list
+    while (ppointer->next != nullptr)
+    {
+        // the next course is what we want
+        if (strcmp(c, ppointer->next->code) == 0)
+        {
+            return ppointer;
+        }
+        ppointer = ppointer->next;
+    }
+    delete ppointer;
+    ppointer = nullptr;
+    return nullptr;
+}
 bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const char preCode[MAX_CODE])
 {
+    // the course is not in the list
+    if (codePointer(head, targetCode) == nullptr)
+    {
+        return false;
+    }
 
     // TODO: Implementation of inserting a pre-requisite
+    CourseItem *item = new CourseItem;
+    Course *idx = new Course;
 
     return false;
 }
@@ -512,6 +560,7 @@ bool ll_delete_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
 
     return false;
 }
+// use to find the pointer of the 2nd-last in a linked list
 
 bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TITLE], int cred)
 {
@@ -527,45 +576,45 @@ bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TI
     cur->credit = cred;
     cur->next = nullptr;
     // cout << "after assign";
+    // cout << previousPointer(head, c);
+    // cout<< codePointer(head,c);
+    // the list is empty
     if (head == nullptr)
     {
         head = cur;
-        // cout << "first node";
+        // cout << head;
         return true;
     }
+    // should be insert at the before the first node
     else if (strcmp(head->code, c) > 0)
     {
         cur->next = head;
         head = cur;
         return true;
     }
-    // cout << "after first";
+
     Course *idx = new Course;
     idx = head;
-    // cout << "before loop";
+
     do
     {
-        // cout << "while";
+        // already exists
         if (strcmp(cur->code, idx->code) == 0)
         {
-            // cout << "already exists" << endl;
             return false;
         }
+        // the current node is what we want
         else if (strcmp(cur->code, idx->code) > 0)
         {
-            // cout << "C";
             cur->next = idx->next;
             idx->next = cur;
             return true;
         }
-        // cout << "D";
         idx = idx->next;
     } while (idx->next != nullptr);
-
+    // insert at last in the linked list
     idx->next = cur;
-    // cout << "head/end wrote" << endl;
     return true;
-    // return false;
 }
 
 bool ll_delete_course(Course *&head, const char c[MAX_CODE])

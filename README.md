@@ -1,5 +1,9 @@
 # UST 2011
 
+### pa3_1.1 [20:47 2022/11/27]
+
+- helper function to find pointer of a code
+
 ### pa3_1.1 [01:51 2022/11/27]
 
 - task2 finished
