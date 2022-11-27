@@ -214,6 +214,7 @@ int main()
 
     while (true)
     {
+        cout<<endl;//comment afterwards
         cout << "=== Menu ===" << endl;
         for (i = 0; i < MAX_MENU_OPTIONS; i++)
             cout << i + 1 << ": " << menuOptions[i] << endl; // shift by +1 when display
@@ -481,11 +482,33 @@ void ll_print_all(const Course *head)
         cout << "No pre-exclusions" << endl;
     }
 }
+CourseItem *coursePointer(CourseItem *const list, const char c[MAX_CODE])
+{
+    if (list == nullptr)
+        return nullptr;
+
+    CourseItem *ppointer = new CourseItem;
+    ppointer = list;
+    // empty list
+
+    while (ppointer != nullptr)
+    {
+        // the next course is what we want
+        if (strcmp(c, ppointer->course->code) == 0)
+        {
+            return ppointer;
+        }
+        ppointer = ppointer->next;
+    }
+    delete ppointer;
+    ppointer = nullptr;
+    return nullptr;
+}
 Course *codePointer(Course *const head, const char c[MAX_CODE])
 {
     if (head == nullptr)
         return nullptr;
-        
+
     Course *ppointer = new Course;
     ppointer = head;
     // empty list
@@ -523,24 +546,119 @@ Course *previousCodePointer(Course *const head, const char c[MAX_CODE])
     ppointer = nullptr;
     return nullptr;
 }
+bool isCodeExist(Course *const head, const char c[MAX_CODE])
+{
+    if (codePointer(head, c) == nullptr)
+        return false;
+    return true;
+}
+bool isCourseExist(CourseItem *const list, const char c[MAX_CODE])
+{
+    if (coursePointer(list, c) == nullptr)
+        return false;
+    return true;
+}
 bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const char preCode[MAX_CODE])
 {
+    // TODO: Implementation of inserting a pre-requisite
+
     // the course is not in the list
-    if (codePointer(head, targetCode) == nullptr)
+    if (!isCodeExist(head, targetCode)||!isCodeExist(head, preCode))
     {
         return false;
     }
 
-    // TODO: Implementation of inserting a pre-requisite
-    CourseItem *item = new CourseItem;
-    Course *idx = new Course;
+    Course *pTarget = new Course;
+    pTarget = codePointer(head, targetCode);
 
+    CourseItem *idx = new CourseItem;
+    CourseItem *item = new CourseItem;
+    idx = pTarget->prerequisites;
+
+    // prerequisite already exists
+    if (isCourseExist(idx, preCode))
+        return false;
+    // empty list of prerequisites
+    if (idx == nullptr)
+    {
+        item->course = codePointer(head, preCode);
+        item->next = nullptr;
+        pTarget->prerequisites = item;
+        return true;
+    }
+    if (strcmp(preCode, idx->course->code) < 0)
+    {
+        item->course = codePointer(head, preCode);
+        item->next = idx;
+        pTarget->prerequisites = item;
+        return true;
+    }
+
+    while (idx != nullptr)
+    {
+        if (strcmp(idx->course->code, preCode) < 0)
+        {
+            item->course = codePointer(head, preCode);
+            item->next = idx->next;
+            idx->next = item;
+            return true;
+        }
+        idx = idx->next;
+    }
+    delete idx;
+    idx = nullptr;
     return false;
 }
 bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const char excludeCode[MAX_CODE])
 {
 
     // TODO: Implementation of inserting an exclusion
+        // the course is not in the list
+    if (!isCodeExist(head, targetCode)||!isCodeExist(head, excludeCode))
+    {
+        return false;
+    }
+
+    Course *pTarget = new Course;
+    pTarget = codePointer(head, targetCode);
+
+    CourseItem *idx = new CourseItem;
+    CourseItem *item = new CourseItem;
+    idx = pTarget->exclusions;
+
+    // prerequisite already exists
+    if (isCourseExist(idx, excludeCode))
+        return false;
+    // empty list of exclusions
+    if (idx == nullptr)
+    {
+        item->course = codePointer(head, excludeCode);
+        item->next = nullptr;
+        pTarget->exclusions = item;
+        return true;
+    }
+    if (strcmp(excludeCode, idx->course->code) < 0)
+    {
+        item->course = codePointer(head, excludeCode);
+        item->next = idx;
+        pTarget->exclusions = item;
+        return true;
+    }
+
+    while (idx != nullptr)
+    {
+        if (strcmp(idx->course->code, excludeCode) < 0)
+        {
+            item->course = codePointer(head, excludeCode);
+            item->next = idx->next;
+            idx->next = item;
+            return true;
+        }
+        idx = idx->next;
+    }
+    delete idx;
+    idx = nullptr;
+    return false;
 
     return false;
 }
@@ -566,18 +684,16 @@ bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TI
 {
 
     // TODO: Implementation of inserting a course
-    // cout << "in";
+
+    // Create a new course(node)
     Course *cur = new Course;
-    // cout << "ooo" << endl;
     strcpy(cur->code, c);
     strcpy(cur->title, t);
     cur->prerequisites = nullptr;
     cur->exclusions = nullptr;
     cur->credit = cred;
     cur->next = nullptr;
-    // cout << "after assign";
-    // cout << previousPointer(head, c);
-    // cout<< codePointer(head,c);
+
     // the list is empty
     if (head == nullptr)
     {
