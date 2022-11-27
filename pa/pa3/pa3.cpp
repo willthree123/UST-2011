@@ -214,7 +214,7 @@ int main()
 
     while (true)
     {
-        cout<<endl;//comment afterwards
+        cout << endl; // comment afterwards
         cout << "=== Menu ===" << endl;
         for (i = 0; i < MAX_MENU_OPTIONS; i++)
             cout << i + 1 << ": " << menuOptions[i] << endl; // shift by +1 when display
@@ -504,6 +504,26 @@ CourseItem *coursePointer(CourseItem *const list, const char c[MAX_CODE])
     ppointer = nullptr;
     return nullptr;
 }
+CourseItem *previousCoursePointer(CourseItem *const list, const char c[MAX_CODE])
+{
+    if (list == nullptr)
+        return nullptr;
+    CourseItem *ppointer = new CourseItem;
+    ppointer = list;
+    // empty list
+    while (ppointer->next != nullptr)
+    {
+        // the next course is what we want
+        if (strcmp(c, ppointer->next->course->code) == 0)
+        {
+            return ppointer;
+        }
+        ppointer = ppointer->next;
+    }
+    delete ppointer;
+    ppointer = nullptr;
+    return nullptr;
+}
 Course *codePointer(Course *const head, const char c[MAX_CODE])
 {
     if (head == nullptr)
@@ -546,9 +566,16 @@ Course *previousCodePointer(Course *const head, const char c[MAX_CODE])
     ppointer = nullptr;
     return nullptr;
 }
+
 bool isCodeExist(Course *const head, const char c[MAX_CODE])
 {
     if (codePointer(head, c) == nullptr)
+        return false;
+    return true;
+}
+bool isPreviousCodeExist(Course *const head, const char c[MAX_CODE])
+{
+    if (previousCodePointer(head, c) == nullptr)
         return false;
     return true;
 }
@@ -558,12 +585,18 @@ bool isCourseExist(CourseItem *const list, const char c[MAX_CODE])
         return false;
     return true;
 }
+bool isPreviousCourseExist(CourseItem *const list, const char c[MAX_CODE])
+{
+    if (previousCoursePointer(list, c) == nullptr)
+        return false;
+    return true;
+}
 bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const char preCode[MAX_CODE])
 {
     // TODO: Implementation of inserting a pre-requisite
 
     // the course is not in the list
-    if (!isCodeExist(head, targetCode)||!isCodeExist(head, preCode))
+    if (!isCodeExist(head, targetCode) || !isCodeExist(head, preCode))
     {
         return false;
     }
@@ -577,7 +610,15 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
 
     // prerequisite already exists
     if (isCourseExist(idx, preCode))
+    {
+        delete pTarget;
+        pTarget = nullptr;
+        delete idx;
+        idx = nullptr;
+        delete item;
+        item = nullptr;
         return false;
+    }
     // empty list of prerequisites
     if (idx == nullptr)
     {
@@ -605,16 +646,20 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
         }
         idx = idx->next;
     }
+    delete pTarget;
+    pTarget = nullptr;
     delete idx;
     idx = nullptr;
+    delete item;
+    item = nullptr;
     return false;
 }
 bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const char excludeCode[MAX_CODE])
 {
 
     // TODO: Implementation of inserting an exclusion
-        // the course is not in the list
-    if (!isCodeExist(head, targetCode)||!isCodeExist(head, excludeCode))
+    // the course is not in the list
+    if (!isCodeExist(head, targetCode) || !isCodeExist(head, excludeCode))
     {
         return false;
     }
@@ -628,7 +673,15 @@ bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
 
     // prerequisite already exists
     if (isCourseExist(idx, excludeCode))
+    {
+        delete pTarget;
+        pTarget = nullptr;
+        delete idx;
+        idx = nullptr;
+        delete item;
+        item = nullptr;
         return false;
+    }
     // empty list of exclusions
     if (idx == nullptr)
     {
@@ -659,16 +712,41 @@ bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
     delete idx;
     idx = nullptr;
     return false;
-
-    return false;
 }
 
 bool ll_delete_prerequisite(Course *head, const char targetCode[MAX_CODE], const char preCode[MAX_CODE])
 {
 
     // TODO: Implementation of deleting a pre-requisite
+    // the code is not in the list
+    if (!isCodeExist(head, targetCode) || !isCodeExist(head, preCode))
+    {
+        return false;
+    }
 
-    return false;
+    Course *pTarget = new Course;
+    pTarget = codePointer(head, targetCode);
+
+    CourseItem *idx = new CourseItem;
+    CourseItem *rubbish = new CourseItem;
+    idx = pTarget->prerequisites;
+
+    rubbish = coursePointer(idx, preCode);
+    // The first one is what we want
+    if (strcmp(idx->course->code, preCode) == 0)
+    {
+        pTarget->prerequisites = idx->next;
+    }
+    else
+    {
+        idx = previousCoursePointer(idx, preCode);
+        idx->next = idx->next->next;
+    }
+    delete rubbish;
+    rubbish = nullptr;
+    // delete pTarget;
+    // pTarget = nullptr;
+    return true;
 }
 
 bool ll_delete_exclusion(Course *head, const char targetCode[MAX_CODE], const char excludeCode[MAX_CODE])
@@ -676,7 +754,35 @@ bool ll_delete_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
 
     // TODO: Implementation of deleting an exclusion
 
-    return false;
+    if (!isCodeExist(head, targetCode) || !isCodeExist(head, excludeCode))
+    {
+        return false;
+    }
+
+    Course *pTarget = new Course;
+    pTarget = codePointer(head, targetCode);
+
+    CourseItem *idx = new CourseItem;
+    CourseItem *rubbish = new CourseItem;
+    idx = pTarget->exclusions;
+
+    rubbish = coursePointer(idx, excludeCode);
+    // The first one is what we want
+    if (strcmp(idx->course->code, excludeCode) == 0)
+    {
+        pTarget->exclusions = idx->next;
+    }
+    else
+    {
+        idx = previousCoursePointer(idx, excludeCode);
+        idx->next = idx->next->next;
+    }
+    delete rubbish;
+    rubbish = nullptr;
+    // delete pTarget;
+    // pTarget = nullptr;
+    return true;
+
 }
 // use to find the pointer of the 2nd-last in a linked list
 
@@ -717,6 +823,8 @@ bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TI
         // already exists
         if (strcmp(cur->code, idx->code) == 0)
         {
+            delete idx;
+            idx = nullptr;
             return false;
         }
         // the current node is what we want
