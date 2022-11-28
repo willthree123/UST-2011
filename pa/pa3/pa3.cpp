@@ -611,8 +611,16 @@ void deleteAllCodeSubCourse(Course *&idx)
 {
     for (Course *i = idx; i != nullptr; i = i->next)
     {
-        deleteAllCodeSubCourse(i);
+        deleteAllSubCourse(i);
     }
+}
+void deleteAllCode(Course *&idx)
+{
+    if (idx == nullptr)
+        return;
+    deleteAllCode(idx->next);
+    delete idx;
+    idx = nullptr;
 }
 ////////////////////////////////////////////////////////////////
 bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const char preCode[MAX_CODE])
@@ -948,4 +956,8 @@ void ll_cleanup_all(Course *&head)
 {
 
     // TODO: Implementation of clean up all
+    cout<<"A";
+    deleteAllCodeSubCourse(head);
+    cout<<"C";
+    deleteAllCode(head);
 }
