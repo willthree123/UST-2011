@@ -616,8 +616,7 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *item = new CourseItem;
@@ -626,8 +625,6 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
     // prerequisite already exists
     if (isCourseExist(idx, preCode))
     {
-        delete pTarget;
-        pTarget = nullptr;
         delete idx;
         idx = nullptr;
         delete item;
@@ -661,8 +658,6 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
         }
         idx = idx->next;
     }
-    delete pTarget;
-    pTarget = nullptr;
     delete idx;
     idx = nullptr;
     delete item;
@@ -679,8 +674,7 @@ bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *item = new CourseItem;
@@ -689,8 +683,6 @@ bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
     // prerequisite already exists
     if (isCourseExist(idx, excludeCode))
     {
-        delete pTarget;
-        pTarget = nullptr;
         delete idx;
         idx = nullptr;
         delete item;
@@ -739,8 +731,7 @@ bool ll_delete_prerequisite(Course *head, const char targetCode[MAX_CODE], const
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *rubbish = new CourseItem;
