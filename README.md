@@ -1,6 +1,10 @@
 # UST 2011
 
 
+### pa3_4.5 [02:26 2022/11/29]
+
+- helper function of delete subcourse
+
 ### pa3_4.4 [02:15 2022/11/29]
 
 - deleted some new pointers
