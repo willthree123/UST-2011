@@ -591,6 +591,21 @@ bool isPreviousCourseExist(CourseItem *const list, const char c[MAX_CODE])
         return false;
     return true;
 }
+void deleteAllPreExCourse(CourseItem *&idx, const char c[MAX_CODE])
+{
+    if (idx == nullptr)
+    {
+        return;
+    }
+    if (idx != nullptr)
+    {
+        deleteAllPreExCourse(idx->next, c);
+    }
+    delete idx;
+    idx = nullptr;
+    return;
+}
+////////////////////////////////////////////////////////////////
 bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const char preCode[MAX_CODE])
 {
     // TODO: Implementation of inserting a pre-requisite
@@ -782,7 +797,6 @@ bool ll_delete_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
     // delete pTarget;
     // pTarget = nullptr;
     return true;
-
 }
 // use to find the pointer of the 2nd-last in a linked list
 
@@ -846,7 +860,64 @@ bool ll_delete_course(Course *&head, const char c[MAX_CODE])
 
     // TODO: Implementation of deleting a course
 
-    return false;
+    // Chech if the code is in the clist
+    if (!isCodeExist(head, c))
+    {
+        return false;
+    }
+    // cout << "A";
+
+    // init idx
+    Course *idx = new Course;
+    idx = head;
+    // cout << "B";
+
+    // delete all repCode/ excludCode
+    while (idx != nullptr)
+    {
+        if (strcmp(idx->code, c) == 0)
+        {
+            // cout << "C";
+            idx = idx->next;
+            continue;
+        }
+        if (isCourseExist(idx->prerequisites, c))
+        {
+            ll_delete_prerequisite(head, idx->code, c);
+            // cout << "D";
+        }
+        else if (isCourseExist(idx->exclusions, c))
+        {
+            ll_delete_exclusion(head, idx->code, c);
+            // cout << "E";
+        }
+        idx = idx->next;
+        // cout << "F";
+    }
+
+    // delete all preCode/ excludCode from c
+    deleteAllPreExCourse(codePointer(head, c)->exclusions, c);
+    deleteAllPreExCourse(codePointer(head, c)->prerequisites, c);
+
+    // delete code from clist
+    Course *rubbish = new Course;
+    idx = head;
+
+    rubbish = codePointer(idx, c);
+    // The first one is what we want
+    if (strcmp(idx->code, c) == 0)
+    {
+        head = idx->next;
+    }
+
+    else
+    {
+        idx = previousCodePointer(idx, c);
+        idx->next = idx->next->next;
+    }
+    delete rubbish;
+    rubbish = nullptr;
+    return true;
 }
 
 bool ll_modify_course_title(Course *head, const char c[MAX_CODE], const char t[MAX_TITLE])
