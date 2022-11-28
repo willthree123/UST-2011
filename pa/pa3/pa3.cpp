@@ -499,8 +499,7 @@ CourseItem *coursePointer(CourseItem *const list, const char c[MAX_CODE])
         }
         ppointer = ppointer->next;
     }
-    delete ppointer;
-    ppointer = nullptr;
+
     return nullptr;
 }
 CourseItem *previousCoursePointer(CourseItem *const list, const char c[MAX_CODE])
@@ -528,8 +527,7 @@ Course *codePointer(Course *const head, const char c[MAX_CODE])
     if (head == nullptr)
         return nullptr;
 
-    Course *ppointer = new Course;
-    ppointer = head;
+    Course *ppointer = head;
     // empty list
 
     while (ppointer != nullptr)
@@ -638,9 +636,8 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
 
     Course *pTarget = codePointer(head, targetCode);
 
-    CourseItem *idx = new CourseItem;
+    CourseItem *idx = pTarget->prerequisites;
     CourseItem *item = new CourseItem;
-    idx = pTarget->prerequisites;
 
     // prerequisite already exists
     if (isCourseExist(idx, preCode))
@@ -696,9 +693,9 @@ bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
 
     Course *pTarget = codePointer(head, targetCode);
 
-    CourseItem *idx = new CourseItem;
+    CourseItem *idx = pTarget->exclusions;
     CourseItem *item = new CourseItem;
-    idx = pTarget->exclusions;
+   
 
     // prerequisite already exists
     if (isCourseExist(idx, excludeCode))
@@ -753,9 +750,9 @@ bool ll_delete_prerequisite(Course *head, const char targetCode[MAX_CODE], const
 
     Course *pTarget = codePointer(head, targetCode);
 
-    CourseItem *idx = new CourseItem;
+    CourseItem *idx = pTarget->prerequisites;
     CourseItem *rubbish = new CourseItem;
-    idx = pTarget->prerequisites;
+
 
     rubbish = coursePointer(idx, preCode);
     // The first one is what we want
@@ -840,8 +837,7 @@ bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TI
         return true;
     }
 
-    Course *idx = new Course;
-    idx = head;
+    Course *idx = head;
 
     do
     {
@@ -959,8 +955,8 @@ void ll_cleanup_all(Course *&head)
 {
 
     // TODO: Implementation of clean up all
-    cout<<"A";
+    // cout<<"A";
     deleteAllCodeSubCourse(head);
-    cout<<"C";
+    // cout<<"C";
     deleteAllCode(head);
 }
