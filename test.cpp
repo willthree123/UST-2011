@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
- 
+#include <iostream>
+using namespace std;
 int main ()
 {
    char str1[15];
@@ -8,23 +9,12 @@ int main ()
    int ret;
  
  
-   strcpy(str1, "COMP2011H");
-   strcpy(str2, "COMP2011");
+   strcpy(str1, "string1");
+   strcpy(str2, "string2");
  
-   ret = strcmp(str1, str2);
- 
-   if(ret < 0)
-   {
-      printf("str1 小于 str2");
-   }
-   else if(ret > 0) 
-   {
-      printf("str1 大于 str2");
-   }
-   else 
-   {
-      printf("str1 等于 str2");
-   }
+   cout<< strcpy(str1, str2);
+   cout<< "  "<< str1;
+
    
    return(0);
 }

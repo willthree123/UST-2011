@@ -919,20 +919,30 @@ bool ll_delete_course(Course *&head, const char c[MAX_CODE])
     rubbish = nullptr;
     return true;
 }
-
+void modContent(Course *course, const char c[MAX_CODE], const char t[MAX_CODE], int cr)
+{
+    strcpy(course->title, t);
+    course->credit = cr;
+}
 bool ll_modify_course_title(Course *head, const char c[MAX_CODE], const char t[MAX_TITLE])
 {
 
     // TODO: Implementation of modifying a course title
+    // code is not in clist
+    if (!isCodeExist(head, c))
+        return false;
 
-    return false;
+    modContent(codePointer(head, c), c, t, codePointer(head, c)->credit);
+    return true;
 }
 bool ll_modify_course_credit(Course *head, const char c[MAX_CODE], int cred)
 {
 
     // TODO: Implementation of modifying a course credit
-
-    return false;
+    if (!isCodeExist(head, c))
+        return false;
+    modContent(codePointer(head, c), c, codePointer(head, c)->title, cred);
+    return true;
 }
 
 void ll_cleanup_all(Course *&head)
