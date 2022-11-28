@@ -1,5 +1,9 @@
 # UST 2011
 
+### pa3_4.2 [02:08 2022/11/29]
+
+- deleted some new pointers
+
 ### pa3_4.1 [23:08 2022/11/28]
 
 - Finished task 8/9

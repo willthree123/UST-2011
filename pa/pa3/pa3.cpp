@@ -550,8 +550,7 @@ Course *previousCodePointer(Course *const head, const char c[MAX_CODE])
 {
     if (head == nullptr)
         return nullptr;
-    Course *ppointer = new Course;
-    ppointer = head;
+    Course *ppointer = head;
     // empty list
     while (ppointer->next != nullptr)
     {
@@ -616,8 +615,7 @@ bool ll_insert_prerequisite(Course *head, const char targetCode[MAX_CODE], const
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *item = new CourseItem;
@@ -679,8 +677,7 @@ bool ll_insert_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *item = new CourseItem;
@@ -739,8 +736,7 @@ bool ll_delete_prerequisite(Course *head, const char targetCode[MAX_CODE], const
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *rubbish = new CourseItem;
@@ -774,8 +770,7 @@ bool ll_delete_exclusion(Course *head, const char targetCode[MAX_CODE], const ch
         return false;
     }
 
-    Course *pTarget = new Course;
-    pTarget = codePointer(head, targetCode);
+    Course *pTarget = codePointer(head, targetCode);
 
     CourseItem *idx = new CourseItem;
     CourseItem *rubbish = new CourseItem;
@@ -829,8 +824,7 @@ bool ll_insert_course(Course *&head, const char c[MAX_CODE], const char t[MAX_TI
         return true;
     }
 
-    Course *idx = new Course;
-    idx = head;
+    Course *idx = head;
 
     do
     {
@@ -868,8 +862,7 @@ bool ll_delete_course(Course *&head, const char c[MAX_CODE])
     // cout << "A";
 
     // init idx
-    Course *idx = new Course;
-    idx = head;
+    Course *idx = head;
     // cout << "B";
 
     // delete all repCode/ excludCode
@@ -900,8 +893,7 @@ bool ll_delete_course(Course *&head, const char c[MAX_CODE])
     deleteAllPreExCourse(codePointer(head, c)->prerequisites, c);
 
     // delete code from clist
-    Course *rubbish = new Course;
-    idx = head;
+    Course *rubbish =  head;
 
     rubbish = codePointer(idx, c);
     // The first one is what we want
