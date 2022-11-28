@@ -487,8 +487,7 @@ CourseItem *coursePointer(CourseItem *const list, const char c[MAX_CODE])
     if (list == nullptr)
         return nullptr;
 
-    CourseItem *ppointer = new CourseItem;
-    ppointer = list;
+    CourseItem *ppointer = list;
     // empty list
 
     while (ppointer != nullptr)
@@ -569,25 +568,29 @@ Course *previousCodePointer(Course *const head, const char c[MAX_CODE])
 
 bool isCodeExist(Course *const head, const char c[MAX_CODE])
 {
-    if (codePointer(head, c) == nullptr)
+    Course *tmp = codePointer(head, c);
+    if (tmp == nullptr)
         return false;
     return true;
 }
 bool isPreviousCodeExist(Course *const head, const char c[MAX_CODE])
 {
-    if (previousCodePointer(head, c) == nullptr)
+    Course *tmp = previousCodePointer(head, c);
+    if (tmp == nullptr)
         return false;
     return true;
 }
 bool isCourseExist(CourseItem *const list, const char c[MAX_CODE])
 {
-    if (coursePointer(list, c) == nullptr)
+    CourseItem *tmp = coursePointer(list, c);
+    if ( tmp == nullptr)
         return false;
     return true;
 }
 bool isPreviousCourseExist(CourseItem *const list, const char c[MAX_CODE])
 {
-    if (previousCoursePointer(list, c) == nullptr)
+    CourseItem *tmp = previousCoursePointer(list, c);
+    if (tmp == nullptr)
         return false;
     return true;
 }
